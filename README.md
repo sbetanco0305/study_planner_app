@@ -3,6 +3,7 @@
 Human Interface Computing Group Project
 
 ## Features
+- Profile
 - Dashboard
 - Assignments
 - Calendar
