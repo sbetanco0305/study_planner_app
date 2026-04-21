@@ -20,7 +20,7 @@ This is intentionally a build guide, not a code dump. The goal is to help each t
 
 ## 2. Current State of the Project
 
-The current codebase is a trimmed version of the Study Planner app. It keeps the shared app shell and the dashboard, but removes the feature-heavy pages that belonged to Persons 3 to 5.
+The current codebase is a unfinished version of the Study Planner app. It keeps the shared app shell and the dashboard, lacks the pages belonging to Persons 3 to 5.
 
 ### What still exists right now
 
@@ -31,20 +31,9 @@ The current codebase is a trimmed version of the Study Planner app. It keeps the
 - Dashboard homepage is complete enough to serve as the visual and structural reference.
 - Placeholder pages exist for unfinished routes so links do not break.
 
-### What was intentionally removed
 
-- Assignment management logic.
-- Calendar page logic.
-- Timer logic.
-- Statistics calculations and charts/cards.
-- Profile editing logic.
-- Resource management logic.
-- Local storage persistence for the full app state.
-- Full context actions for adding, editing, deleting, and toggling data.
 
----
-
-## 3. What Person 1 Already Completed
+## 3. What Person 1 (gavin) Already Completed
 
 Person 1's work is the project foundation. Everyone else should build on top of it rather than replacing it.
 
@@ -79,11 +68,11 @@ Person 1's work is the project foundation. Everyone else should build on top of 
 
 ### Important note for Persons 3 to 5
 
-Do not redesign the app shell unless the whole team agrees to it. The routes, provider wrapper, and navbar are already wired correctly. Your job is to plug features back into the existing structure.
+Do not redesign the app shell unless the whole team agrees to it. The routes, provider wrapper, and navbar are already wired correctly. Your job is to plug features into the existing structure.
 
 ---
 
-## 4. What Person 2 Already Completed
+## 4. What Person 2 (gavin) Already Completed
 
 Person 2's work is the current dashboard implementation. It is the clearest example of how the rest of the app should look and feel.
 
@@ -136,7 +125,6 @@ That means each person should only need to focus on their own page and the share
 - `upcomingAssignments`
 - `dashboardStats`
 
-This is a simplified version of the old full state layer.
 
 ### Seed data
 
@@ -145,7 +133,7 @@ This is a simplified version of the old full state layer.
 - `initialSubjects`
 - `initialAssignments`
 
-This file should grow again when the full app is restored.
+This file should grow again when the full app is complete.
 
 ### Utility helpers
 
@@ -163,7 +151,7 @@ These helpers should be reused instead of rewritten.
 
 ## 6. Recommended Team Redistribution
 
-To get the app back to roughly where it was before trimming, I recommend this slightly updated split:
+To get the app to a finished state we should split the work up like this.
 
 ### Person 3
 
@@ -193,9 +181,8 @@ Reason: this is one complete planning/date-based feature area.
 
 Reason: these pages all depend on user-specific state, study metrics, and app personalization.
 
-If the team wants to keep the original split exactly as written, Resources can stay unassigned and be treated as extra credit. But if the goal is to restore the app close to its earlier version, someone needs to own it, and Person 3 is the cleanest fit.
+If we want to keep the original split exactly as written, Resources can stay unassigned and be treated as extra credit. But if the goal is to keep it identical to the figma, someone needs to own it, and Person 3 is the cleanest fit.
 
----
 
 ## 7. The First Shared Step for Everyone
 
@@ -229,7 +216,7 @@ Before separate page work starts, the team should restore the full shared state 
 
 ### Persistence should return
 
-If you want parity with the earlier full app, restore local storage persistence in context so changes survive refreshes.
+restore local storage persistence in context so changes survive refreshes.
 
 This means:
 
@@ -250,7 +237,7 @@ This means:
 
 ## Goal
 
-Rebuild the academic task-management section of the app.
+Build the academic task-management section of the app.
 
 ### Pages Person 3 should complete
 
@@ -376,7 +363,7 @@ Recommended resource types:
 
 ## Goal
 
-Rebuild the planner view that combines calendar events with assignment deadlines.
+Build the planner view that combines calendar events with assignment deadlines.
 
 ### Page Person 4 should complete
 
@@ -465,7 +452,7 @@ These should be used directly for the calendar logic.
 
 ## Goal
 
-Rebuild the user-focused productivity layer of the app.
+Build the user-focused productivity layer of the app.
 
 ### Pages Person 5 should complete
 
