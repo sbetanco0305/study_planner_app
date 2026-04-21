@@ -2,9 +2,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useStudyPlanner } from "../context/useStudyPlanner";
 
 const TIMER_MODES = {
-  focus: 10,
-  shortBreak: 5 ,
-  longBreak: 8,
+  focus: 25 * 60,
+  shortBreak: 5 * 60,
+  longBreak: 15 * 60,
 };
 
 export default function Timer() {
@@ -13,10 +13,9 @@ export default function Timer() {
   const [mode, setMode] = useState("focus");
   const [remainingSeconds, setRemainingSeconds] = useState(TIMER_MODES.focus);
   const [isRunning, setIsRunning] = useState(false);
+  const hasRecordedSession = useRef(false);
 
   const totalSecondsForMode = TIMER_MODES[mode];
-
-  const hasRecordedSession = useRef(false);
 
   useEffect(() => {
     if (!isRunning) return;
@@ -71,73 +70,68 @@ export default function Timer() {
   const formattedTime = useMemo(() => {
     const minutes = Math.floor(remainingSeconds / 60);
     const seconds = remainingSeconds % 60;
-
     return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   }, [remainingSeconds]);
 
   return (
-    <section className="page-section timer-page">
-      <div className="page-header">
-        <div>
-          <p className="eyebrow">Study Timer</p>
-          <h1>Stay focused with structured sessions</h1>
-          <p className="page-subtitle">
-            Choose a study mode, start the timer, and track completed focus sessions.
-          </p>
-        </div>
-      </div>
+    <section className="timer-page">
+      <h1 className="timer-page-title">Study Timer</h1>
 
-      <div className="timer-card">
+      <div className="timer-panel">
         <div className="timer-mode-buttons">
           <button
-            className={mode === "focus" ? "active" : ""}
+            className={`timer-mode-button ${mode === "focus" ? "active" : ""}`}
             onClick={() => handleModeChange("focus")}
           >
-            Focus
+            Focus 
           </button>
+
           <button
-            className={mode === "shortBreak" ? "active" : ""}
+            className={`timer-mode-button ${mode === "shortBreak" ? "active" : ""}`}
             onClick={() => handleModeChange("shortBreak")}
           >
             Short Break
           </button>
+
           <button
-            className={mode === "longBreak" ? "active" : ""}
+            className={`timer-mode-button ${mode === "longBreak" ? "active" : ""}`}
             onClick={() => handleModeChange("longBreak")}
           >
             Long Break
           </button>
         </div>
 
-        <div className="timer-display">{formattedTime}</div>
+        <div className="timer-circle">
+          <span className="timer-display">{formattedTime}</span>
+        </div>
 
         <div className="timer-controls">
-          <button onClick={handleStart}>Start</button>
-          <button onClick={handlePause}>Pause</button>
-          <button onClick={handleReset}>Reset</button>
+          {!isRunning ? (
+            <button className="timer-action-button primary" onClick={handleStart}>
+              Start
+            </button>
+          ) : (
+            <button className="timer-action-button primary" onClick={handlePause}>
+              Pause
+            </button>
+          )}
+
+          <button className="timer-action-button secondary" onClick={handleReset}>
+            Reset
+          </button>
         </div>
-      </div>
 
-      <div className="stats-grid">
-        <article className="stat-card">
-          <h3>Focus Sessions Today</h3>
-          <p>{studyStats.focusSessionsToday}</p>
-        </article>
+        <div className="timer-summary-card">
+          <div className="timer-summary-item">
+            <p className="timer-summary-label">Sessions Completed Today</p>
+            <p className="timer-summary-value">{studyStats.focusSessionsToday}</p>
+          </div>
 
-        <article className="stat-card">
-          <h3>Study Minutes Today</h3>
-          <p>{studyStats.studyMinutesToday}</p>
-        </article>
-
-        <article className="stat-card">
-          <h3>Total Study Minutes</h3>
-          <p>{studyStats.totalStudyMinutes}</p>
-        </article>
-
-        <article className="stat-card">
-          <h3>Current Streak</h3>
-          <p>{studyStats.streakDays}</p>
-        </article>
+          <div className="timer-summary-item align-right">
+            <p className="timer-summary-label">Study Time Today</p>
+            <p className="timer-summary-value">{studyStats.studyMinutesToday} min</p>
+          </div>
+        </div>
       </div>
     </section>
   );
