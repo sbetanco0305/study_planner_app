@@ -20,6 +20,7 @@ export function StudyPlannerProvider({ children }) {
     studyMinutesToday: 0,
     totalStudyMinutes: 0,
     streakDays: 0,
+    weeklyMinutes: [0, 0, 0, 0, 0, 0, 0],
   });
 
   const [profile, setProfile] = useState({
@@ -38,12 +39,18 @@ export function StudyPlannerProvider({ children }) {
   });
 
   function recordFocusSession(minutes) {
-    setStudyStats((prev) => ({
-      ...prev,
-      focusSessionsToday: prev.focusSessionsToday + 1,
-      studyMinutesToday: prev.studyMinutesToday + minutes,
-      totalStudyMinutes: prev.totalStudyMinutes + minutes,
-    }));
+    setStudyStats((prev) => {
+      const updatedWeeklyMinutes = [...prev.weeklyMinutes];
+      updatedWeeklyMinutes[updatedWeeklyMinutes.length - 1] += minutes;
+    
+      return {
+        ...prev,
+        focusSessionsToday: prev.focusSessionsToday + 1,
+        studyMinutesToday: prev.studyMinutesToday + minutes,
+        totalStudyMinutes: prev.totalStudyMinutes + minutes,
+        weeklyMinutes: updatedWeeklyMinutes,
+      };
+    });
   }
 
   function updateProfile(updates) {
