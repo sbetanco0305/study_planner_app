@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { initialAssignments, initialSubjects } from "../data/initialData";
 import { StudyPlannerContext } from "./StudyPlannerContextObject";
 
@@ -11,9 +11,58 @@ const defaultState = {
 };
 
 export function StudyPlannerProvider({ children }) {
+
+  const [assignments, setAssignments] = useState(defaultState.assignments);
+  const [subjects, setSubjects] = useState(defaultState.subjects);
+
+  const [studyStats, setStudyStats] = useState({
+    focusSessionsToday: 0,
+    studyMinutesToday: 0,
+    totalStudyMinutes: 0,
+    streakDays: 0,
+  });
+
+  const [profile, setProfile] = useState({
+    username: "Student",
+    email: "student@example.com",
+    school: "",
+    major: "",
+    year: "",
+    hobbies: "",
+  });
+
+  const [settings, setSettings] = useState({
+    darkMode: false,
+    emailNotifications: false,
+    studyReminders: false,
+  });
+
+  function recordFocusSession(minutes) {
+    setStudyStats((prev) => ({
+      ...prev,
+      focusSessionsToday: prev.focusSessionsToday + 1,
+      studyMinutesToday: prev.studyMinutesToday + minutes,
+      totalStudyMinutes: prev.totalStudyMinutes + minutes,
+    }));
+  }
+
+  function updateProfile(updates) {
+    setProfile((prev) => ({
+      ...prev,
+      ...updates,
+    }));
+  }
+
+  function toggleSetting(settingKey) {
+    setSettings((prev) => ({
+      ...prev,
+      [settingKey]: !prev[settingKey],
+    }));
+  }
+
   const value = useMemo(() => {
-    const subjects = defaultState.subjects.map((subject) => {
-      const subjectAssignments = defaultState.assignments.filter(
+    const enrichedSubjects = subjects.map((subject) => {
+      const subjectAssignments = assignments.filter(
         (assignment) => assignment.subjectId === subject.id,
       );
       const completedCount = subjectAssignments.filter(
@@ -34,31 +83,38 @@ export function StudyPlannerProvider({ children }) {
       };
     });
 
-    const upcomingAssignments = [...defaultState.assignments]
+    const upcomingAssignments = [...assignments]
       .filter((assignment) => !assignment.completed)
       .sort((left, right) => left.dueDate.localeCompare(right.dueDate))
       .map((assignment) => ({
         ...assignment,
-        subject: subjects.find((subject) => subject.id === assignment.subjectId),
+        subject: enrichedSubjects.find((subject) => subject.id === assignment.subjectId),
       }));
 
-    const completedAssignments = defaultState.assignments.filter(
+    const completedAssignments = assignments.filter(
       (assignment) => assignment.completed,
     ).length;
 
     return {
-      subjects,
+      subjects: enrichedSubjects,
+      assignments,
       upcomingAssignments,
       dashboardStats: {
-        activeCourses: subjects.length,
+        activeCourses: enrichedSubjects.length,
         upcomingCount: upcomingAssignments.length,
         completedCount: completedAssignments,
-        completionRate: defaultState.assignments.length
-          ? Math.round((completedAssignments / defaultState.assignments.length) * 100)
+        completionRate: assignments.length
+          ? Math.round((completedAssignments / assignments.length) * 100)
           : 0,
       },
+      studyStats,
+      profile,
+      settings,
+      recordFocusSession,
+      updateProfile,
+      toggleSetting,
     };
-  }, []);
+  }, [subjects, assignments, studyStats, profile, settings]);
 
   return (
     <StudyPlannerContext.Provider value={value}>
