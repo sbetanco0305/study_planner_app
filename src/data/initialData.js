@@ -215,3 +215,14 @@ export const initialAssignments = [
     progress: 0,
   },
 ];
+
+export const initialCalendarEvents = [
+  {
+    id: "event-1",
+    subjectId: "subject-dsa",
+    title: "Midterm Review Session",
+    date: "2026-03-20",
+    startTime: "14:00",
+    endTime: "16:00",
+  }
+];
