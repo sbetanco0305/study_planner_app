@@ -1,5 +1,9 @@
 import { useState, useMemo } from "react";
-import { initialAssignments, initialSubjects } from "../data/initialData";
+import {
+  initialAssignments,
+  initialSubjects,
+  initialCalendarEvents,
+} from "../data/initialData";
 import { StudyPlannerContext } from "./StudyPlannerContextObject";
 
 const defaultState = {
@@ -8,12 +12,13 @@ const defaultState = {
     ...assignment,
     progress: assignment.completed ? 100 : assignment.progress ?? 0,
   })),
+  calendarEvents: initialCalendarEvents,
 };
 
 export function StudyPlannerProvider({ children }) {
-
   const [assignments, setAssignments] = useState(defaultState.assignments);
   const [subjects, setSubjects] = useState(defaultState.subjects);
+  const [calendarEvents, setCalendarEvents] = useState(defaultState.calendarEvents);
 
   const [studyStats, setStudyStats] = useState({
     focusSessionsToday: 0,
@@ -43,6 +48,7 @@ export function StudyPlannerProvider({ children }) {
       const updatedWeeklyMinutes = [...prev.weeklyMinutes];
       updatedWeeklyMinutes[updatedWeeklyMinutes.length - 1] += minutes;
     
+
       return {
         ...prev,
         focusSessionsToday: prev.focusSessionsToday + 1,
@@ -67,14 +73,22 @@ export function StudyPlannerProvider({ children }) {
     }));
   }
 
+  const addCalendarEvent = (event) =>
+    setCalendarEvents((prev) => [...prev, event]);
+
+  const deleteCalendarEvent = (id) =>
+    setCalendarEvents((prev) => prev.filter((event) => event.id !== id));
+
   const value = useMemo(() => {
     const enrichedSubjects = subjects.map((subject) => {
       const subjectAssignments = assignments.filter(
         (assignment) => assignment.subjectId === subject.id,
       );
+
       const completedCount = subjectAssignments.filter(
         (assignment) => assignment.completed,
       ).length;
+
       const nextAssignment = subjectAssignments
         .filter((assignment) => !assignment.completed)
         .sort((left, right) => left.dueDate.localeCompare(right.dueDate))[0];
@@ -95,7 +109,9 @@ export function StudyPlannerProvider({ children }) {
       .sort((left, right) => left.dueDate.localeCompare(right.dueDate))
       .map((assignment) => ({
         ...assignment,
-        subject: enrichedSubjects.find((subject) => subject.id === assignment.subjectId),
+        subject: enrichedSubjects.find(
+          (subject) => subject.id === assignment.subjectId,
+        ),
       }));
 
     const completedAssignments = assignments.filter(
@@ -114,6 +130,9 @@ export function StudyPlannerProvider({ children }) {
           ? Math.round((completedAssignments / assignments.length) * 100)
           : 0,
       },
+      calendarEvents,
+      addCalendarEvent,
+      deleteCalendarEvent,
       studyStats,
       profile,
       settings,
@@ -121,7 +140,7 @@ export function StudyPlannerProvider({ children }) {
       updateProfile,
       toggleSetting,
     };
-  }, [subjects, assignments, studyStats, profile, settings]);
+  }, [subjects, assignments, calendarEvents, studyStats, profile, settings]);
 
   return (
     <StudyPlannerContext.Provider value={value}>
