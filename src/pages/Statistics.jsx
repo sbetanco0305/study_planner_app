@@ -1,89 +1,101 @@
 import { useMemo } from "react";
+import { BarChart3, CheckCircle2, Clock3, Target, TrendingUp } from "lucide-react";
 import { useStudyPlanner } from "../context/useStudyPlanner";
 
 const WEEK_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export default function Statistics() {
-  const { studyStats, assignments, dashboardStats } = useStudyPlanner();
+  const { studyStats, subjects, assignments, dashboardStats } = useStudyPlanner();
 
-  const completedTasks = useMemo(
-    () => assignments.filter((assignment) => assignment.completed).length,
-    [assignments]
+  const completedTasks = assignments.filter((assignment) => assignment.completed).length;
+
+  const weeklyData = useMemo(
+    () =>
+      WEEK_LABELS.map((label, index) => ({
+        label,
+        minutes: studyStats.weeklyMinutes?.[index] ?? 0,
+      })),
+    [studyStats.weeklyMinutes],
   );
 
-  const weeklyData = useMemo(() => {
-    return WEEK_LABELS.map((label, index) => ({
-      label,
-      minutes: studyStats.weeklyMinutes?.[index] ?? 0,
-    }));
-  }, [studyStats.weeklyMinutes]);
-
-  const maxMinutes = Math.max(...weeklyData.map((day) => day.minutes), 1);
+  const totalWeeklyMinutes = weeklyData.reduce((sum, day) => sum + day.minutes, 0);
 
   return (
-    <section className="statistics-page">
-      <h1 className="statistics-page-title">Statistics</h1>
+    <section className="figma-statistics-page">
+      <h1 className="figma-statistics-title">Statistics &amp; Progress</h1>
 
-      <div className="statistics-grid">
-        <article className="statistics-card primary">
-          <p className="statistics-label">Focus Sessions Today</p>
-          <h2>{studyStats.focusSessionsToday}</h2>
-        </article>
-
-        <article className="statistics-card primary">
-          <p className="statistics-label">Study Minutes Today</p>
-          <h2>{studyStats.studyMinutesToday}</h2>
-        </article>
-
-        <article className="statistics-card primary">
-          <p className="statistics-label">Total Study Minutes</p>
-          <h2>{studyStats.totalStudyMinutes}</h2>
-        </article>
-
-        <article className="statistics-card primary">
-          <p className="statistics-label">Streak Days</p>
-          <h2>{studyStats.streakDays}</h2>
-        </article>
-
-        <article className="statistics-card secondary">
-          <p className="statistics-label">Completed Tasks</p>
-          <h2>{completedTasks}</h2>
-        </article>
-
-        <article className="statistics-card secondary">
-          <p className="statistics-label">Assignment Completion Rate</p>
-          <h2>{dashboardStats.completionRate}%</h2>
-        </article>
+      <div className="figma-stats-grid">
+        <StatCard icon={<Clock3 />} value={`${studyStats.totalStudyMinutes}m`} label="Total Study Time" tone="blue" />
+        <StatCard icon={<TrendingUp />} value={`${dashboardStats.completionRate}%`} label="Completion Rate" tone="green" />
+        <StatCard icon={<CheckCircle2 />} value={completedTasks} label="Completed Tasks" tone="purple" />
+        <StatCard icon={<Target />} value={`${studyStats.streakDays} days`} label="Current Streak" tone="orange" />
       </div>
 
-      <div className="weekly-progress-card">
-        <div className="weekly-progress-header">
-          <div>
-            <p className="statistics-label">Weekly Study Progress</p>
-            <h2>Study time this week</h2>
-          </div>
-          <p className="weekly-total">
-            {weeklyData.reduce((sum, day) => sum + day.minutes, 0)} min
-          </p>
-        </div>
+      <article className="figma-chart-card">
+        <h2>Weekly Study Time</h2>
 
-        <div className="weekly-bars">
+        <div className="figma-weekly-chart">
           {weeklyData.map((day) => (
-            <div key={day.label} className="weekly-bar-group">
-              <div className="weekly-bar-track">
+            <div key={day.label} className="figma-weekly-column">
+              <div className="figma-weekly-bar-area">
                 <div
-                  className="weekly-bar-fill"
-                  style={{
-                    height: `${(day.minutes / maxMinutes) * 100}%`,
-                  }}
+                  className="figma-weekly-bar"
+                  style={{ height: `${Math.max(day.minutes * 6, day.minutes > 0 ? 12 : 0)}px` }}
                 />
               </div>
-              <span className="weekly-bar-value">{day.minutes}</span>
-              <span className="weekly-bar-label">{day.label}</span>
+              <strong>{day.label}</strong>
+              <span>{day.minutes}m</span>
             </div>
           ))}
         </div>
-      </div>
+
+        <p className="figma-weekly-total">
+          Total this week: <strong>{totalWeeklyMinutes} min</strong>
+        </p>
+      </article>
+
+      <article className="figma-progress-card">
+        <h2>Progress by Subject</h2>
+
+        <div className="figma-subject-progress-list">
+          {subjects.map((subject) => {
+            const total = subject.assignmentCount || 0;
+            const completed = subject.completedCount || 0;
+            const progress = total ? Math.round((completed / total) * 100) : 0;
+
+            return (
+              <div key={subject.id} className="figma-subject-progress-item">
+                <div className="figma-subject-progress-top">
+                  <h3>{subject.name}</h3>
+                  <span>
+                    {completed}/{total} assignments
+                  </span>
+                </div>
+
+                <div className="figma-subject-progress-track">
+                  <div
+                    className="figma-subject-progress-fill"
+                    style={{
+                      width: `${progress}%`,
+                      background: subject.color,
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </article>
     </section>
+  );
+}
+
+function StatCard({ icon, value, label, tone }) {
+  return (
+    <article className="figma-stat-card">
+      <div className={`figma-stat-icon ${tone}`}>{icon}</div>
+      <strong>{value}</strong>
+      <span>{label}</span>
+    </article>
   );
 }
