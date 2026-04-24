@@ -47,6 +47,7 @@ export function StudyPlannerProvider({ children }) {
     setStudyStats((prev) => {
       const updatedWeeklyMinutes = [...prev.weeklyMinutes];
       updatedWeeklyMinutes[updatedWeeklyMinutes.length - 1] += minutes;
+    
 
       return {
         ...prev,

@@ -2,9 +2,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useStudyPlanner } from "../context/useStudyPlanner";
 
 const TIMER_MODES = {
-  focus: 25 * 60,
-  shortBreak: 5 * 60,
-  longBreak: 15 * 60,
+  focus: 10,
+  shortBreak: 5,
+  longBreak: 8,
 };
 
 export default function Timer() {
