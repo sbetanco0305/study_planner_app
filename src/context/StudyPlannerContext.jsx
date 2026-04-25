@@ -37,15 +37,24 @@ export function StudyPlannerProvider({ children }) {
     hobbies: "",
   });
 
-  const [settings, setSettings] = useState({
-    darkMode: false,
-    emailNotifications: false,
-    studyReminders: false,
+  const [settings, setSettings] = useState(() => {
+    const savedSettings = localStorage.getItem("studyPlannerSettings");
+
+    if (savedSettings) {
+      return JSON.parse(savedSettings);
+    }
+
+    return {
+      darkMode: false,
+      emailNotifications: false,
+      studyReminders: false,
+    };
   });
 
   useEffect(() => {
+    localStorage.setItem("studyPlannerSettings", JSON.stringify(settings));
     document.documentElement.dataset.theme = settings.darkMode ? "dark" : "light";
-  }, [settings.darkMode]);
+  }, [settings]);
 
   function recordFocusSession(minutes) {
     setStudyStats((prev) => {
