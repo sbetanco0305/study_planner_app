@@ -397,6 +397,18 @@
 ========================= */
 
 .timer-page {
+  --timer-accent: #2563eb;
+}
+
+.timer-page.shortBreak {
+  --timer-accent: #16a34a;
+}
+
+.timer-page.longBreak {
+  --timer-accent: #7c3aed;
+}
+
+.timer-page {
   padding: 28px 32px 48px;
 }
 
@@ -438,24 +450,73 @@
 }
 
 .timer-mode-button.active {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: var(--timer-accent);
   color: #ffffff;
-  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.22);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+}
+
+.timer-cycle-note {
+  margin: -20px 0 32px;
+  text-align: center;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.timer-status {
+  text-align: center;
+  margin: 6px 0 28px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--timer-accent);
+  transition: color 0.3s ease;
+}
+
+.timer-status.focus,
+.timer-status.shortBreak,
+.timer-status.longBreak {
+  transform: translateY(0);
 }
 
 .timer-circle {
+  position: relative;
   width: 360px;
   height: 360px;
   margin: 0 auto 44px;
   border-radius: 50%;
-  border: 8px solid #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #ffffff;
 }
 
+.timer-progress-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg) scaleY(-1);
+}
+
+.timer-progress-ring-bg,
+.timer-progress-ring-fill {
+  fill: none;
+  stroke-width: 12;
+}
+
+.timer-progress-ring-bg {
+  stroke: #e5e7eb;
+}
+
+.timer-progress-ring-fill {
+  stroke: var(--timer-accent);
+  stroke-linecap: round;
+  transition: stroke 0.3s ease, stroke-dashoffset 0.1s linear;
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.2));
+}
+
 .timer-display {
+  position: relative;
+  z-index: 1;
   font-size: 76px;
   line-height: 1;
   font-weight: 500;
@@ -481,7 +542,8 @@
   transition: all 0.2s ease;
 }
 
-.timer-action-button.primary {
+.timer-action-button.primary,
+html[data-theme="dark"] .timer-action-button.primary {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: #ffffff;
   box-shadow: 0 10px 24px rgba(37, 99, 235, 0.22);
@@ -1535,6 +1597,46 @@ html[data-theme="dark"] .figma-setting-row input::before {
   background: #ffffff;
 }
 
+html[data-theme="dark"] .timer-circle {
+  background: #1f2937;
+}
+
+html[data-theme="dark"] .timer-progress-ring-bg {
+  stroke: #334155;
+}
+
+html[data-theme="dark"] .timer-progress-ring-fill.focus {
+  stroke: #60a5fa;
+}
+
+html[data-theme="dark"] .timer-progress-ring-fill.shortBreak {
+  stroke: #4ade80;
+}
+
+html[data-theme="dark"] .timer-progress-ring-fill.longBreak {
+  stroke: #a78bfa;
+}
+
+html[data-theme="dark"] .timer-cycle-note {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .timer-status {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .timer-page {
+  --timer-accent: #60a5fa;
+}
+
+html[data-theme="dark"] .timer-page.shortBreak {
+  --timer-accent: #4ade80;
+}
+
+html[data-theme="dark"] .timer-page.longBreak {
+  --timer-accent: #a78bfa;
+}
+
 /* Subtle hover polish */
 .metric-card:hover,
 .task-card:hover,
@@ -1558,4 +1660,54 @@ button:hover {
 
 button:active {
   transform: translateY(0);
+}
+
+/* FINAL TIMER MODE COLOR SYSTEM */
+
+.timer-page.focus {
+  --timer-accent: #2563eb;
+}
+
+.timer-page.shortBreak {
+  --timer-accent: #16a34a;
+}
+
+.timer-page.longBreak {
+  --timer-accent: #7c3aed;
+}
+
+html[data-theme="dark"] .timer-page.focus {
+  --timer-accent: #60a5fa;
+}
+
+html[data-theme="dark"] .timer-page.shortBreak {
+  --timer-accent: #4ade80;
+}
+
+html[data-theme="dark"] .timer-page.longBreak {
+  --timer-accent: #a78bfa;
+}
+
+.timer-page .timer-mode-button.active,
+html[data-theme="dark"] .timer-page .timer-mode-button.active {
+  background: var(--timer-accent);
+  color: #ffffff;
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--timer-accent) 35%, transparent);
+}
+
+.timer-page .timer-status,
+html[data-theme="dark"] .timer-page .timer-status {
+  color: var(--timer-accent);
+}
+
+.timer-page .timer-progress-ring-fill,
+html[data-theme="dark"] .timer-page .timer-progress-ring-fill {
+  stroke: var(--timer-accent);
+}
+
+.timer-page .timer-action-button.primary,
+html[data-theme="dark"] .timer-page .timer-action-button.primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.22);
 }
