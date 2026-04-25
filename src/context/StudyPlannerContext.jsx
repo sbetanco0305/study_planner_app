@@ -6,6 +6,13 @@ import {
 } from "../data/initialData";
 import { StudyPlannerContext } from "./StudyPlannerContextObject";
 
+
+function loadFromStorage(key, defaultValue) {
+  const saved = localStorage.getItem(key);
+  return saved ? JSON.parse(saved) : defaultValue;
+}
+
+
 const defaultState = {
   subjects: initialSubjects,
   assignments: initialAssignments.map((assignment) => ({
@@ -16,45 +23,66 @@ const defaultState = {
 };
 
 export function StudyPlannerProvider({ children }) {
-  const [assignments, setAssignments] = useState(defaultState.assignments);
+  const [assignments, setAssignments] = useState(() =>
+    loadFromStorage("assignments", defaultState.assignments)
+  );
   const [subjects, setSubjects] = useState(defaultState.subjects);
   const [calendarEvents, setCalendarEvents] = useState(defaultState.calendarEvents);
 
-  const [studyStats, setStudyStats] = useState({
-    focusSessionsToday: 0,
-    studyMinutesToday: 0,
-    totalStudyMinutes: 0,
-    streakDays: 0,
-    weeklyMinutes: [0, 0, 0, 0, 0, 0, 0],
-  });
+  const [studyStats, setStudyStats] = useState(() =>
+    loadFromStorage("studyStats", {
+      focusSessionsToday: 0,
+      studyMinutesToday: 0,
+      totalStudyMinutes: 0,
+      streakDays: 0,
+      weeklyMinutes: [0, 0, 0, 0, 0, 0, 0],
+    })
+  );
 
-  const [profile, setProfile] = useState({
-    username: "Student",
-    email: "student@example.com",
-    school: "",
-    major: "",
-    year: "",
-    hobbies: "",
-  });
+  const [profile, setProfile] = useState(() =>
+    loadFromStorage("profile", {
+      username: "Student",
+      email: "student@example.com",
+      school: "",
+      major: "",
+      year: "",
+      hobbies: "",
+    })
+  );
 
-  const [settings, setSettings] = useState(() => {
-    const savedSettings = localStorage.getItem("studyPlannerSettings");
-
-    if (savedSettings) {
-      return JSON.parse(savedSettings);
-    }
-
-    return {
+  const [settings, setSettings] = useState(() =>
+    loadFromStorage("settings", {
       darkMode: false,
       emailNotifications: false,
       studyReminders: false,
-    };
-  });
+    })
+  );
+
+  function resetApp() {
+    localStorage.clear();
+    window.location.reload();
+  }
 
   useEffect(() => {
-    localStorage.setItem("studyPlannerSettings", JSON.stringify(settings));
+    window.devTools = { resetApp };
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("profile", JSON.stringify(profile));
+  }, [profile]);
+
+  useEffect(() => {
+    localStorage.setItem("settings", JSON.stringify(settings));
     document.documentElement.dataset.theme = settings.darkMode ? "dark" : "light";
   }, [settings]);
+
+  useEffect(() => {
+    localStorage.setItem("studyStats", JSON.stringify(studyStats));
+  }, [studyStats]);
+
+  useEffect(() => {
+    localStorage.setItem("assignments", JSON.stringify(assignments));
+  }, [assignments]);
 
   function recordFocusSession(minutes) {
     setStudyStats((prev) => {
@@ -152,6 +180,7 @@ export function StudyPlannerProvider({ children }) {
       recordFocusSession,
       updateProfile,
       toggleSetting,
+      resetApp,
     };
   }, [subjects, assignments, calendarEvents, studyStats, profile, settings]);
 
