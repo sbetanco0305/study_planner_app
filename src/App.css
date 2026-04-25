@@ -1325,3 +1325,187 @@
     min-width: 0;
   }
 }
+
+/* =========================
+   DARK MODE
+========================= */
+
+html[data-theme="dark"] .app-shell {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 28%),
+    linear-gradient(180deg, #0f172a 0%, #111827 100%);
+  color: #e5e7eb;
+}
+
+html[data-theme="dark"] .site-header {
+  background: rgba(15, 23, 42, 0.96);
+  border-bottom-color: #334155;
+}
+
+html[data-theme="dark"] .brand-name,
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] strong {
+  color: #f9fafb;
+}
+
+html[data-theme="dark"] p,
+html[data-theme="dark"] span,
+html[data-theme="dark"] label {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .nav-link {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .nav-link:hover,
+html[data-theme="dark"] .nav-link.active {
+  background: #1e293b;
+  color: #60a5fa;
+}
+
+html[data-theme="dark"] .app-card,
+html[data-theme="dark"] .metric-card,
+html[data-theme="dark"] .task-card,
+html[data-theme="dark"] .subject-overview-card,
+html[data-theme="dark"] .sidebar-card,
+html[data-theme="dark"] .timer-panel,
+html[data-theme="dark"] .timer-circle,
+html[data-theme="dark"] .statistics-card,
+html[data-theme="dark"] .weekly-progress-card,
+html[data-theme="dark"] .figma-stat-card,
+html[data-theme="dark"] .figma-chart-card,
+html[data-theme="dark"] .figma-progress-card,
+html[data-theme="dark"] .figma-profile-card,
+html[data-theme="dark"] .figma-settings-card,
+html[data-theme="dark"] .figma-assignment-card,
+html[data-theme="dark"] .figma-modal {
+  background: #1f2937;
+  border-color: #334155;
+  color: #e5e7eb;
+}
+
+html[data-theme="dark"] .timer-summary-card,
+html[data-theme="dark"] .figma-setting-row,
+html[data-theme="dark"] .profile-summary-list div {
+  background: #111827;
+  border-color: #334155;
+}
+
+html[data-theme="dark"] .timer-mode-button,
+html[data-theme="dark"] .timer-action-button.secondary,
+html[data-theme="dark"] .figma-cancel-btn {
+  background: #334155;
+  color: #e5e7eb;
+}
+
+html[data-theme="dark"] .timer-display {
+  color: #f9fafb;
+}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select {
+  background: #111827;
+  color: #f9fafb;
+  border-color: #475569;
+}
+
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .progress-bar,
+html[data-theme="dark"] .figma-subject-progress-track,
+html[data-theme="dark"] .weekly-bar-track {
+  background: #334155;
+}
+
+html[data-theme="dark"] .help-fab {
+  background: #f9fafb;
+  color: #111827;
+}
+
+/* =========================
+   DARK MODE FIXES
+========================= */
+
+/* Fix timer active mode button */
+html[data-theme="dark"] .timer-mode-button.active {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.28);
+}
+
+/* Fix assignments page background/header */
+html[data-theme="dark"] .figma-assignments-page {
+  background: transparent;
+}
+
+html[data-theme="dark"] .figma-page-title {
+  color: #f9fafb;
+}
+
+html[data-theme="dark"] .figma-page-subtitle,
+html[data-theme="dark"] .figma-section-header span {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .figma-section-header h2 {
+  color: #f9fafb;
+}
+
+/* Fix assignment cards */
+html[data-theme="dark"] .figma-assignment-card {
+  background: #1f2937;
+  border-color: #334155;
+}
+
+html[data-theme="dark"] .figma-assignment-title,
+html[data-theme="dark"] .figma-due-date,
+html[data-theme="dark"] .figma-progress-label,
+html[data-theme="dark"] .figma-progress-percent {
+  color: #e5e7eb;
+}
+
+/* Fix settings rows on profile */
+html[data-theme="dark"] .figma-settings-card {
+  background: #1f2937;
+  border-color: #334155;
+}
+
+html[data-theme="dark"] .figma-setting-row {
+  background: transparent;
+  border-bottom-color: #334155;
+  padding: 26px 0;
+}
+
+html[data-theme="dark"] .figma-setting-row strong {
+  color: #f9fafb;
+}
+
+html[data-theme="dark"] .figma-setting-row span {
+  color: #cbd5e1;
+}
+
+/* Fix custom toggle in dark mode */
+html[data-theme="dark"] .figma-setting-row input {
+  appearance: none;
+  width: 62px;
+  height: 34px;
+  border-radius: 999px;
+  background: #475569;
+  border: none;
+  padding: 0;
+}
+
+html[data-theme="dark"] .figma-setting-row input:checked {
+  background: #2f80ed;
+}
+
+html[data-theme="dark"] .figma-setting-row input::before {
+  background: #ffffff;
+}

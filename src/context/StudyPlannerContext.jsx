@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   initialAssignments,
   initialSubjects,
@@ -42,6 +42,10 @@ export function StudyPlannerProvider({ children }) {
     emailNotifications: false,
     studyReminders: false,
   });
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = settings.darkMode ? "dark" : "light";
+  }, [settings.darkMode]);
 
   function recordFocusSession(minutes) {
     setStudyStats((prev) => {
