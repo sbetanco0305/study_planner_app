@@ -4,6 +4,14 @@ import { useStudyPlanner } from "../context/useStudyPlanner";
 
 const WEEK_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+function formatStudyTime(minutes) {
+  if (minutes < 1) {
+    return `${Math.round(minutes * 60)} sec`;
+  }
+
+  return `${Math.round(minutes)} min`;
+}
+
 export default function Statistics() {
   const { studyStats, subjects, assignments, dashboardStats } = useStudyPlanner();
 
@@ -25,7 +33,7 @@ export default function Statistics() {
       <h1 className="figma-statistics-title">Statistics &amp; Progress</h1>
 
       <div className="figma-stats-grid">
-        <StatCard icon={<Clock3 />} value={`${studyStats.totalStudyMinutes}m`} label="Total Study Time" tone="blue" />
+        <StatCard icon={<Clock3 />} value={formatStudyTime(studyStats.totalStudyMinutes)} label="Total Study Time" tone="blue" />
         <StatCard icon={<TrendingUp />} value={`${dashboardStats.completionRate}%`} label="Completion Rate" tone="green" />
         <StatCard icon={<CheckCircle2 />} value={completedTasks} label="Completed Tasks" tone="purple" />
         <StatCard icon={<Target />} value={`${studyStats.streakDays} days`} label="Current Streak" tone="orange" />
@@ -44,13 +52,13 @@ export default function Statistics() {
                 />
               </div>
               <strong>{day.label}</strong>
-              <span>{day.minutes}m</span>
+              <span>{formatStudyTime(day.minutes)}</span>
             </div>
           ))}
         </div>
 
         <p className="figma-weekly-total">
-          Total this week: <strong>{totalWeeklyMinutes} min</strong>
+          Total this week: <strong>{formatStudyTime(totalWeeklyMinutes)}</strong>
         </p>
       </article>
 

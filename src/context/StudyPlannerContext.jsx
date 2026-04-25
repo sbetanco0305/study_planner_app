@@ -12,6 +12,19 @@ function loadFromStorage(key, defaultValue) {
   return saved ? JSON.parse(saved) : defaultValue;
 }
 
+function getTodayKey() {
+  return new Date().toISOString().split("T")[0];
+}
+
+function getYesterdayKey() {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  return yesterday.toISOString().split("T")[0];
+}
+
+function getDefaultWeeklyMinutes() {
+  return [0, 0, 0, 0, 0, 0, 0];
+}
 
 const defaultState = {
   subjects: initialSubjects,
@@ -36,6 +49,7 @@ export function StudyPlannerProvider({ children }) {
       totalStudyMinutes: 0,
       streakDays: 0,
       weeklyMinutes: [0, 0, 0, 0, 0, 0, 0],
+      lastStudyDate: null,
     })
   );
 
@@ -86,16 +100,34 @@ export function StudyPlannerProvider({ children }) {
 
   function recordFocusSession(minutes) {
     setStudyStats((prev) => {
-      const updatedWeeklyMinutes = [...prev.weeklyMinutes];
-      updatedWeeklyMinutes[updatedWeeklyMinutes.length - 1] += minutes;
+      const today = getTodayKey();
+      const yesterday = getYesterdayKey();
+      const isNewDay = prev.lastStudyDate !== today;
     
-
+      let updatedStreak = prev.streakDays;
+    
+      if (isNewDay) {
+        if (prev.lastStudyDate === yesterday) {
+          updatedStreak = prev.streakDays + 1;
+        } else {
+          updatedStreak = 1;
+        }
+      }
+    
+      const updatedWeeklyMinutes = [...(prev.weeklyMinutes || getDefaultWeeklyMinutes())];
+      const todayIndex = new Date().getDay(); // Sun = 0, Mon = 1...
+      const normalizedIndex = todayIndex === 0 ? 6 : todayIndex - 1; // Mon = 0, Sun = 6
+    
+      updatedWeeklyMinutes[normalizedIndex] += minutes;
+    
       return {
         ...prev,
-        focusSessionsToday: prev.focusSessionsToday + 1,
-        studyMinutesToday: prev.studyMinutesToday + minutes,
+        focusSessionsToday: isNewDay ? 1 : prev.focusSessionsToday + 1,
+        studyMinutesToday: isNewDay ? minutes : prev.studyMinutesToday + minutes,
         totalStudyMinutes: prev.totalStudyMinutes + minutes,
         weeklyMinutes: updatedWeeklyMinutes,
+        streakDays: updatedStreak,
+        lastStudyDate: today,
       };
     });
   }
