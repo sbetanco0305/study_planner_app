@@ -115,7 +115,9 @@ export default function Timer() {
     if (mode === "focus") {
       if (!hasRecordedSession.current) {
         hasRecordedSession.current = true;
-        recordFocusSession(Math.max(1, Math.round(totalSecondsForMode / 60)));
+
+        const minutesStudied = totalSecondsForMode / 60;
+        recordFocusSession(minutesStudied);
       }
 
       setFocusSessionsInCycle((prev) => {
@@ -159,6 +161,14 @@ export default function Timer() {
 
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.5);
+  }
+
+  function formatStudyTime(minutes) {
+    if (minutes < 1) {
+      return `${Math.round(minutes * 60)} sec`;
+    }
+
+    return `${Math.round(minutes)} min`;
   }
 
   const formattedTime = useMemo(() => {
@@ -259,7 +269,9 @@ export default function Timer() {
 
           <div className="timer-summary-item align-right">
             <p className="timer-summary-label">Study Time Today</p>
-            <p className="timer-summary-value">{studyStats.studyMinutesToday} min</p>
+            <p className="timer-summary-value">
+              {formatStudyTime(studyStats.studyMinutesToday)}
+            </p>
           </div>
         </div>
       </div>
