@@ -419,6 +419,20 @@
   margin: 0 0 22px;
 }
 
+.timer-page-header {
+  margin-bottom: 28px;
+}
+
+.timer-page-title {
+  margin: 0 0 8px;
+}
+
+.timer-page-subtitle {
+  margin: 0;
+  color: #64748b;
+  font-size: 1rem;
+}
+
 .timer-panel {
   max-width: 920px;
   margin: 0 auto;
@@ -587,6 +601,32 @@ html[data-theme="dark"] .timer-action-button.primary {
   font-size: 34px;
   font-weight: 700;
   color: #2563eb;
+}
+
+.timer-how-it-works {
+  max-width: 920px;
+  margin: 32px auto 0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 28px 32px;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+}
+
+.timer-how-it-works h2 {
+  margin: 0 0 18px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.timer-how-it-works ul {
+  margin: 0;
+  padding-left: 22px;
+  color: #334155;
+  display: grid;
+  gap: 12px;
+  font-size: 1rem;
 }
 
 @media (max-width: 900px) {
@@ -1635,6 +1675,23 @@ html[data-theme="dark"] .timer-page.shortBreak {
 
 html[data-theme="dark"] .timer-page.longBreak {
   --timer-accent: #a78bfa;
+}
+
+html[data-theme="dark"] .timer-page-subtitle {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .timer-how-it-works {
+  background: #1f2937;
+  border-color: #334155;
+}
+
+html[data-theme="dark"] .timer-how-it-works h2 {
+  color: #f9fafb;
+}
+
+html[data-theme="dark"] .timer-how-it-works ul {
+  color: #cbd5e1;
 }
 
 /* Subtle hover polish */

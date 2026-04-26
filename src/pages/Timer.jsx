@@ -181,7 +181,12 @@ export default function Timer() {
 
   return (
     <section className={`timer-page ${mode}`}>
-      <h1 className="timer-page-title">Study Timer</h1>
+      <div className="timer-page-header">
+        <h1 className="timer-page-title">Study Timer</h1>
+        <p className="timer-page-subtitle">
+          Use focused study sessions and scheduled breaks to stay productive.
+        </p>
+      </div>
 
       <div className="timer-panel">
         <div className="timer-mode-buttons">
@@ -274,6 +279,16 @@ export default function Timer() {
             </p>
           </div>
         </div>
+      </div>
+
+      <div className="timer-how-it-works">
+        <h2>How it Works</h2>
+        <ul>
+          <li>Focus Time: 25 minutes of concentrated study</li>
+          <li>Short Break: 5 minutes to rest and recharge</li>
+          <li>Long Break: 15 minutes after completing 4 focus sessions</li>
+          <li>The timer automatically moves you through the Pomodoro cycle</li>
+        </ul>
       </div>
     </section>
   );
