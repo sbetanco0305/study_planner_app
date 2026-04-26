@@ -50,6 +50,7 @@ export function StudyPlannerProvider({ children }) {
       streakDays: 0,
       weeklyMinutes: [0, 0, 0, 0, 0, 0, 0],
       lastStudyDate: null,
+      dailyStudyGoalMinutes: 60,
     })
   );
 
@@ -97,6 +98,13 @@ export function StudyPlannerProvider({ children }) {
   useEffect(() => {
     localStorage.setItem("assignments", JSON.stringify(assignments));
   }, [assignments]);
+
+  function updateDailyStudyGoal(minutes) {
+    setStudyStats((prev) => ({
+      ...prev,
+      dailyStudyGoalMinutes: minutes,
+    }));
+  }
 
   function recordFocusSession(minutes) {
     setStudyStats((prev) => {
@@ -213,6 +221,7 @@ export function StudyPlannerProvider({ children }) {
       updateProfile,
       toggleSetting,
       resetApp,
+      updateDailyStudyGoal
     };
   }, [subjects, assignments, calendarEvents, studyStats, profile, settings]);
 

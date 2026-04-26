@@ -13,7 +13,7 @@ function formatStudyTime(minutes) {
 }
 
 export default function Statistics() {
-  const { studyStats, subjects, assignments, dashboardStats } = useStudyPlanner();
+  const { studyStats, subjects, assignments, dashboardStats, updateDailyStudyGoal } = useStudyPlanner();
 
   const completedTasks = assignments.filter((assignment) => assignment.completed).length;
 
@@ -28,6 +28,13 @@ export default function Statistics() {
 
   const totalWeeklyMinutes = weeklyData.reduce((sum, day) => sum + day.minutes, 0);
 
+  const dailyGoalMinutes = studyStats.dailyStudyGoalMinutes || 60;
+
+  const dailyGoalProgress = Math.min(
+    Math.round((studyStats.studyMinutesToday / dailyGoalMinutes) * 100),
+    100
+  );
+
   return (
     <section className="figma-statistics-page">
       <h1 className="figma-statistics-title">Statistics &amp; Progress</h1>
@@ -38,6 +45,42 @@ export default function Statistics() {
         <StatCard icon={<CheckCircle2 />} value={completedTasks} label="Completed Tasks" tone="purple" />
         <StatCard icon={<Target />} value={`${studyStats.streakDays} days`} label="Current Streak" tone="orange" />
       </div>
+
+      <article className="figma-daily-goal-card">
+        <div className="figma-daily-goal-header">
+          <div>
+            <h2>Daily Study Goal</h2>
+            <p>
+              {formatStudyTime(studyStats.studyMinutesToday)} of{" "}
+              {formatStudyTime(dailyGoalMinutes)} completed
+            </p>
+          </div>
+
+          <strong>{dailyGoalProgress}%</strong>
+        </div>
+
+        <div className="figma-daily-goal-editor">
+          <label>
+            Goal:
+            <input
+              type="number"
+              min="1"
+              value={dailyGoalMinutes}
+              onChange={(event) =>
+                updateDailyStudyGoal(Number(event.target.value))
+              }
+            />
+            min/day
+          </label>
+        </div>
+
+        <div className="figma-daily-goal-track">
+          <div
+            className="figma-daily-goal-fill"
+            style={{ width: `${dailyGoalProgress}%` }}
+          />
+        </div>
+      </article>
 
       <article className="figma-chart-card">
         <h2>Weekly Study Time</h2>
