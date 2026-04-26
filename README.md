@@ -3,12 +3,13 @@
 Human Interface Computing Group Project
 
 ## Features
-- Profile
 - Dashboard
 - Assignments
 - Calendar
 - Timer
 - Statistics
+- Resources
+- Profile
 
 ## Tech
 - HTML
