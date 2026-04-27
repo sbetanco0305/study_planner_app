@@ -1868,3 +1868,17 @@ html[data-theme="dark"] .timer-page .timer-action-button.primary {
   color: #ffffff;
   box-shadow: 0 10px 24px rgba(37, 99, 235, 0.22);
 }
+.figma-complete-btn {
+  margin-top: 14px;
+  border: none;
+  background: #dcfce7;
+  color: #15803d;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.figma-complete-btn:hover {
+  background: #bbf7d0;
+}

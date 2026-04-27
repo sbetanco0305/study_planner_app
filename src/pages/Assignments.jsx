@@ -9,7 +9,7 @@ function formatDate(dateString) {
   });
 }
 
-function AssignmentCard({ assignment, subject, completed = false }) {
+function AssignmentCard({ assignment, subject, completed = false, onComplete }) {
   return (
     <div className={`figma-assignment-card ${completed ? "completed-card" : ""}`}>
       <div className="figma-assignment-top">
@@ -48,6 +48,14 @@ function AssignmentCard({ assignment, subject, completed = false }) {
               }}
             />
           </div>
+
+          <button
+            className="figma-complete-btn"
+            type="button"
+            onClick={() => onComplete(assignment.id)}
+          >
+            Mark Complete
+          </button>
         </>
       )}
     </div>
@@ -117,6 +125,17 @@ export default function Assignments() {
     setShowModal(false);
   }
 
+  function markComplete(id) {
+    const updatedAssignments = assignments.map((assignment) =>
+      assignment.id === id
+        ? { ...assignment, completed: true, progress: 100 }
+        : assignment
+    );
+
+    localStorage.setItem("assignments", JSON.stringify(updatedAssignments));
+    window.location.reload();
+  }
+
   return (
     <div className="figma-assignments-page">
       <div className="figma-page-header">
@@ -148,6 +167,7 @@ export default function Assignments() {
               key={assignment.id}
               assignment={assignment}
               subject={subjectMap[assignment.subjectId]}
+              onComplete={markComplete}
             />
           ))}
         </div>
