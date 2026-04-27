@@ -1,16 +1,12 @@
 import { useMemo, useState } from "react";
-import { initialAssignments, initialSubjects } from "../data/initialData";
+import { useStudyPlanner } from "../context/useStudyPlanner";
 
 function formatDate(dateString) {
-  const date = new Date(dateString);
+  const date = new Date(`${dateString}T00:00:00`);
   return date.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
   });
-}
-
-function getSubjectMap() {
-  return Object.fromEntries(initialSubjects.map((subject) => [subject.id, subject]));
 }
 
 function AssignmentCard({ assignment, subject, completed = false }) {
@@ -59,16 +55,19 @@ function AssignmentCard({ assignment, subject, completed = false }) {
 }
 
 export default function Assignments() {
-  const [assignments, setAssignments] = useState(initialAssignments);
+  const { assignments, subjects, addAssignment } = useStudyPlanner();
+
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
-    subjectId: initialSubjects[0]?.id || "",
+    subjectId: subjects[0]?.id || "",
     dueDate: "",
     progress: 0,
   });
 
-  const subjectMap = useMemo(() => getSubjectMap(), []);
+  const subjectMap = useMemo(() => {
+    return Object.fromEntries(subjects.map((subject) => [subject.id, subject]));
+  }, [subjects]);
 
   const inProgress = assignments
     .filter((assignment) => !assignment.completed)
@@ -80,6 +79,7 @@ export default function Assignments() {
 
   function handleChange(e) {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: name === "progress" ? Number(value) : value,
@@ -94,22 +94,26 @@ export default function Assignments() {
       return;
     }
 
+    const progressValue = Number(formData.progress);
+
     const newAssignment = {
       id: `assignment-${Date.now()}`,
       subjectId: formData.subjectId,
       title: formData.title.trim(),
       dueDate: formData.dueDate,
-      completed: Number(formData.progress) >= 100,
-      progress: Number(formData.progress),
+      completed: progressValue >= 100,
+      progress: progressValue,
     };
 
-    setAssignments((prev) => [newAssignment, ...prev]);
+    addAssignment(newAssignment);
+
     setFormData({
       title: "",
-      subjectId: initialSubjects[0]?.id || "",
+      subjectId: subjects[0]?.id || "",
       dueDate: "",
       progress: 0,
     });
+
     setShowModal(false);
   }
 
@@ -123,7 +127,11 @@ export default function Assignments() {
           </p>
         </div>
 
-        <button className="figma-add-btn" type="button" onClick={() => setShowModal(true)}>
+        <button
+          className="figma-add-btn"
+          type="button"
+          onClick={() => setShowModal(true)}
+        >
           + Add Assignment
         </button>
       </div>
@@ -196,7 +204,7 @@ export default function Assignments() {
                   value={formData.subjectId}
                   onChange={handleChange}
                 >
-                  {initialSubjects.map((subject) => (
+                  {subjects.map((subject) => (
                     <option key={subject.id} value={subject.id}>
                       {subject.name}
                     </option>

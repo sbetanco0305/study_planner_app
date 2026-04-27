@@ -153,6 +153,8 @@ export function StudyPlannerProvider({ children }) {
       [settingKey]: !prev[settingKey],
     }));
   }
+const addAssignment = (assignment) =>
+  setAssignments((prev) => [...prev, assignment]);
 
   const addCalendarEvent = (event) =>
     setCalendarEvents((prev) => [...prev, event]);
@@ -202,6 +204,7 @@ export function StudyPlannerProvider({ children }) {
     return {
       subjects: enrichedSubjects,
       assignments,
+      addAssignment,
       upcomingAssignments,
       dashboardStats: {
         activeCourses: enrichedSubjects.length,
