@@ -1,0 +1,135 @@
+.resources-page {
+  padding: 30px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.resources-header {
+  margin-bottom: 25px;
+}
+
+.resources-header h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.resources-header p {
+  color: #666;
+}
+
+.resource-form {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.resource-form h2 {
+  margin-bottom: 10px;
+}
+
+.resource-form label {
+  font-weight: 600;
+}
+
+.resource-form input,
+.resource-form select,
+.resource-form textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.resource-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.resource-form button {
+  margin-top: 10px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #4f46e5;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.resource-form button:hover {
+  background: #4338ca;
+}
+
+.resources-list h2 {
+  margin-bottom: 15px;
+}
+
+.empty-message {
+  color: #777;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.resource-card {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.resource-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resource-card-header h3 {
+  margin: 0;
+}
+
+.resource-card-header span {
+  background: #eef2ff;
+  color: #4f46e5;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.resource-card p {
+  margin: 12px 0;
+  color: #555;
+}
+
+.resource-card a {
+  color: #4f46e5;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.resource-footer {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resource-footer button {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.resource-footer button:hover {
+  background: #dc2626;
+}
