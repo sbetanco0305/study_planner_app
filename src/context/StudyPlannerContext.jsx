@@ -110,28 +110,32 @@ export function StudyPlannerProvider({ children }) {
     setStudyStats((prev) => {
       const today = getTodayKey();
       const yesterday = getYesterdayKey();
-      const isNewDay = prev.lastStudyDate !== today;
-    
+
+      const isSameDay = prev.lastStudyDate === today;
+      const isYesterday = prev.lastStudyDate === yesterday;
+
       let updatedStreak = prev.streakDays;
-    
-      if (isNewDay) {
-        if (prev.lastStudyDate === yesterday) {
+
+      if (!isSameDay) {
+        if (isYesterday) {
           updatedStreak = prev.streakDays + 1;
         } else {
           updatedStreak = 1;
         }
       }
-    
+
       const updatedWeeklyMinutes = [...(prev.weeklyMinutes || getDefaultWeeklyMinutes())];
-      const todayIndex = new Date().getDay(); // Sun = 0, Mon = 1...
-      const normalizedIndex = todayIndex === 0 ? 6 : todayIndex - 1; // Mon = 0, Sun = 6
-    
+      const todayIndex = new Date().getDay();
+      const normalizedIndex = todayIndex === 0 ? 6 : todayIndex - 1;
+
       updatedWeeklyMinutes[normalizedIndex] += minutes;
-    
+
       return {
         ...prev,
-        focusSessionsToday: isNewDay ? 1 : prev.focusSessionsToday + 1,
-        studyMinutesToday: isNewDay ? minutes : prev.studyMinutesToday + minutes,
+        focusSessionsToday: isSameDay ? prev.focusSessionsToday + 1 : 1,
+        studyMinutesToday: isSameDay
+          ? prev.studyMinutesToday + minutes
+          : minutes,
         totalStudyMinutes: prev.totalStudyMinutes + minutes,
         weeklyMinutes: updatedWeeklyMinutes,
         streakDays: updatedStreak,

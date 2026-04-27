@@ -12,6 +12,29 @@ function formatStudyTime(minutes) {
   return `${Math.round(minutes)} min`;
 }
 
+function formatTime(seconds) {
+  const roundedSeconds = Math.round(seconds); // 👈 FIX
+
+  if (roundedSeconds < 60) {
+    return `${roundedSeconds} sec`;
+  }
+
+  const minutes = Math.floor(roundedSeconds / 60);
+
+  if (minutes < 60) {
+    return `${minutes} min`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  if (remainingMinutes === 0) {
+    return `${hours}h`;
+  }
+
+  return `${hours}h ${remainingMinutes}m`;
+}
+
 export default function Statistics() {
   const { studyStats, subjects, assignments, dashboardStats, updateDailyStudyGoal } = useStudyPlanner();
 
@@ -29,6 +52,23 @@ export default function Statistics() {
   const totalWeeklyMinutes = weeklyData.reduce((sum, day) => sum + day.minutes, 0);
 
   const dailyGoalMinutes = studyStats.dailyStudyGoalMinutes || 60;
+
+  const goalHours = Math.floor(dailyGoalMinutes / 60);
+  const goalMinutes = dailyGoalMinutes % 60;
+
+  function handleGoalHoursChange(event) {
+    const newHours = Number(event.target.value);
+    const totalMinutes = newHours * 60 + goalMinutes;
+
+    updateDailyStudyGoal(totalMinutes);
+  }
+
+  function handleGoalMinutesChange(event) {
+    const newMinutes = Number(event.target.value);
+    const totalMinutes = goalHours * 60 + newMinutes;
+
+    updateDailyStudyGoal(totalMinutes);
+  }
 
   const dailyGoalProgress = Math.min(
     Math.round((studyStats.studyMinutesToday / dailyGoalMinutes) * 100),
@@ -51,8 +91,8 @@ export default function Statistics() {
           <div>
             <h2>Daily Study Goal</h2>
             <p>
-              {formatStudyTime(studyStats.studyMinutesToday)} of{" "}
-              {formatStudyTime(dailyGoalMinutes)} completed
+              {formatTime(studyStats.studyMinutesToday * 60)} of{" "}
+              {formatTime(dailyGoalMinutes * 60)} completed
             </p>
           </div>
 
@@ -60,18 +100,24 @@ export default function Statistics() {
         </div>
 
         <div className="figma-daily-goal-editor">
-          <label>
-            Goal:
-            <input
-              type="number"
-              min="1"
-              value={dailyGoalMinutes}
-              onChange={(event) =>
-                updateDailyStudyGoal(Number(event.target.value))
-              }
-            />
-            min/day
-          </label>
+          <span>Goal:</span>
+
+          <input
+            type="number"
+            min="0"
+            value={goalHours}
+            onChange={handleGoalHoursChange}
+          />
+          <span>hours</span>
+
+          <input
+            type="number"
+            min="0"
+            max="59"
+            value={goalMinutes}
+            onChange={handleGoalMinutesChange}
+          />
+          <span>minutes/day</span>
         </div>
 
         <div className="figma-daily-goal-track">

@@ -629,6 +629,35 @@ html[data-theme="dark"] .timer-action-button.primary {
   font-size: 1rem;
 }
 
+.reset-hold-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.reset-hold-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  transition: width 0s linear;
+  z-index: 0;
+}
+
+.reset-hold-button.holding::before {
+  width: 100%;
+  transition: width 2s linear;
+}
+
+.reset-hold-button span {
+  position: relative;
+  z-index: 1;
+}
+
+.reset-hold-button.holding {
+  color: #ffffff;
+}
+
 @media (max-width: 900px) {
   .timer-page {
     padding: 24px 20px 40px;
@@ -1611,7 +1640,13 @@ select {
 
 .figma-daily-goal-editor {
   margin-top: 18px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: #475569;
+  font-weight: 600;
 }
 
 .figma-daily-goal-editor label {
@@ -1623,10 +1658,12 @@ select {
 }
 
 .figma-daily-goal-editor input {
-  width: 80px;
+  width: 82px;
   border: 1px solid #dbe1ea;
   border-radius: 10px;
   padding: 8px 10px;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 html[data-theme="dark"] .figma-daily-goal-card {
@@ -1647,6 +1684,10 @@ html[data-theme="dark"] .figma-daily-goal-track {
 }
 
 html[data-theme="dark"] .figma-daily-goal-editor label {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .figma-daily-goal-editor {
   color: #cbd5e1;
 }
 

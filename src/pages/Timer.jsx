@@ -36,6 +36,10 @@ export default function Timer() {
 
   const hasCompletedCurrentRun = useRef(false);
 
+  const resetHoldTimeout = useRef(null);
+  const [isHoldingReset, setIsHoldingReset] = useState(false);
+  const [didLongReset, setDidLongReset] = useState(false);
+
   const totalSecondsForMode = TIMER_MODES[mode];
 
   const radius = 170;
@@ -103,10 +107,39 @@ export default function Timer() {
   }
 
   function handleReset() {
+    if (didLongReset) {
+      setDidLongReset(false);
+      return;
+    }
+
     setIsRunning(false);
     setRemainingSeconds(TIMER_MODES[mode]);
     hasRecordedSession.current = false;
     hasCompletedCurrentRun.current = false;
+  }
+
+  function handleResetHoldStart() {
+    setIsHoldingReset(true);
+    setDidLongReset(false);
+
+    resetHoldTimeout.current = setTimeout(() => {
+      setIsRunning(false);
+      setMode("focus");
+      setRemainingSeconds(TIMER_MODES.focus);
+      setFocusSessionsInCycle(0);
+      hasRecordedSession.current = false;
+      hasCompletedCurrentRun.current = false;
+      setDidLongReset(true);
+      setIsHoldingReset(false);
+    }, 2000);
+  }
+
+  function handleResetHoldEnd() {
+    if (resetHoldTimeout.current) {
+      clearTimeout(resetHoldTimeout.current);
+    }
+  
+    setIsHoldingReset(false);
   }
 
   function handleSessionComplete() {
@@ -261,9 +294,19 @@ export default function Timer() {
             </button>
           )}
 
-          <button className="timer-action-button secondary" onClick={handleReset}>
-            Reset
-          </button>
+            <button
+              className={`timer-action-button secondary reset-hold-button ${
+                isHoldingReset ? "holding" : ""
+              }`}
+              onClick={handleReset}
+              onMouseDown={handleResetHoldStart}
+              onMouseUp={handleResetHoldEnd}
+              onMouseLeave={handleResetHoldEnd}
+              onTouchStart={handleResetHoldStart}
+              onTouchEnd={handleResetHoldEnd}
+            >
+              <span>{isHoldingReset ? "Hold to reset cycle..." : "Reset"}</span>
+            </button>
         </div>
 
         <div className="timer-summary-card">
@@ -288,6 +331,8 @@ export default function Timer() {
           <li>Short Break: 5 minutes to rest and recharge</li>
           <li>Long Break: 15 minutes after completing 4 focus sessions</li>
           <li>The timer automatically moves you through the Pomodoro cycle</li>
+          <li>Click the Reset button to restart the current session</li>
+          <li>Hold the Reset button for 2 seconds to reset the entire cycle</li>
         </ul>
       </div>
     </section>
