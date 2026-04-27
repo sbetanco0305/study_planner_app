@@ -8,6 +8,9 @@ export default function Calendar() {
   const [viewDate, setViewDate] = useState(new Date("2026-03-01T12:00:00"));
   
   const [showModal, setShowModal] = useState(false);
+  // State for the item you click on to view details
+  const [selectedItem, setSelectedItem] = useState(null); 
+
   const [formData, setFormData] = useState({
     title: "",
     date: "",
@@ -61,7 +64,6 @@ export default function Calendar() {
       </div>
 
       <div className="dashboard-layout">
-        {/* Main Calendar Grid Area */}
         <div className="app-card" style={{ padding: "30px", minWidth: 0 }}>
           <div className="section-subhead" style={{ marginBottom: "24px" }}>
             <button onClick={handlePrevMonth} className="figma-cancel-btn">&larr; Prev</button>
@@ -69,21 +71,23 @@ export default function Calendar() {
             <button onClick={handleNextMonth} className="figma-cancel-btn">Next &rarr;</button>
           </div>
 
-          {/* Days of the Week Header */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: "12px", textAlign: "center", fontWeight: "800", color: "#64748b", marginBottom: "12px", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
             <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
           </div>
           
-          {/* Calendar Day Cells */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: "12px" }}>
             {monthGrid.map((day) => {
-              const dateStr = day.date.toISOString().split("T")[0];
+              const localYear = day.date.getFullYear();
+              const localMonth = String(day.date.getMonth() + 1).padStart(2, '0');
+              const localDay = String(day.date.getDate()).padStart(2, '0');
+              const dateStr = `${localYear}-${localMonth}-${localDay}`;
+
               const dayEvents = calendarEvents.filter((e) => e.date === dateStr);
               const dayAssignments = incompleteAssignments.filter((a) => a.dueDate === dateStr);
 
               return (
                 <div key={day.key} style={{ 
-                  height: "140px", // Fixed height so the grid stays perfect
+                  height: "140px", 
                   padding: "10px", 
                   border: "2px solid #e2e8f0", 
                   borderRadius: "12px", 
@@ -97,14 +101,16 @@ export default function Calendar() {
                     {day.date.getDate()}
                   </div>
                   
-                  {/* Scrollable container for events */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px", overflowY: "auto", flex: 1, paddingRight: "4px" }}>
-                    
-                    {/* Events */}
+                  <div className="calendar-cell-content" style={{ display: "flex", flexDirection: "column", gap: "6px", overflowY: "auto", flex: 1, paddingRight: "4px" }}>
                     {dayEvents.map((event) => {
                       const subject = subjects.find((s) => s.id === event.subjectId);
                       return (
-                        <div key={event.id} style={{ fontSize: "0.7rem", padding: "6px 8px", borderRadius: "6px", background: subject ? `${subject.color}15` : "#f1f5f9", color: subject ? subject.color : "#334155", fontWeight: "700", display: "flex", alignItems: "center", gap: "6px" }}>
+                        <div 
+                          key={event.id} 
+                          title={event.title} // Adds hover tooltip
+                          onClick={() => setSelectedItem({ type: "Event", data: event, subject })} // Opens modal on click
+                          style={{ cursor: "pointer", fontSize: "0.7rem", padding: "6px 8px", borderRadius: "6px", background: subject ? `${subject.color}15` : "#f1f5f9", color: subject ? subject.color : "#334155", fontWeight: "700", display: "flex", alignItems: "center", gap: "6px" }}
+                        >
                           <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: subject ? subject.color : "#cbd5e1", flexShrink: 0 }} />
                           <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1, minWidth: 0 }}>
                             {event.title}
@@ -113,11 +119,15 @@ export default function Calendar() {
                       );
                     })}
 
-                    {/* Assignments */}
                     {dayAssignments.map((assignment) => {
                       const subject = subjects.find((s) => s.id === assignment.subjectId);
                       return (
-                        <div key={assignment.id} style={{ fontSize: "0.7rem", padding: "6px 8px", borderRadius: "6px", background: "#fee2e2", color: "#ef4444", fontWeight: "700", display: "flex", flexDirection: "column", gap: "4px" }}>
+                        <div 
+                          key={assignment.id} 
+                          title={`Due: ${assignment.title}`} // Adds hover tooltip
+                          onClick={() => setSelectedItem({ type: "Assignment", data: assignment, subject })} // Opens modal on click
+                          style={{ cursor: "pointer", fontSize: "0.7rem", padding: "6px 8px", borderRadius: "6px", background: "#fee2e2", color: "#ef4444", fontWeight: "700", display: "flex", flexDirection: "column", gap: "4px" }}
+                        >
                           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                             <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: subject ? subject.color : "#cbd5e1", flexShrink: 0 }} />
                             <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1, minWidth: 0 }}>
@@ -137,7 +147,6 @@ export default function Calendar() {
           </div>
         </div>
 
-        {/* Sidebar */}
         <aside className="stack-section dashboard-sidebar">
           <article className="app-card sidebar-card" style={{ border: "2px solid #e2e8f0", borderRadius: "20px", padding: "24px", background: "#f8fafc" }}>
             <div className="section-subhead" style={{ marginBottom: "20px" }}>
@@ -177,6 +186,61 @@ export default function Calendar() {
           </article>
         </aside>
       </div>
+
+      {/* Item Details Modal (Pops up when clicking an event or assignment) */}
+      {selectedItem && (
+        <div className="figma-modal-overlay">
+          <div className="figma-modal" style={{ border: "2px solid #e2e8f0", borderRadius: "20px", padding: "24px", maxWidth: "400px" }}>
+            <div className="figma-modal-header" style={{ marginBottom: "20px" }}>
+              <h2 style={{ fontWeight: "800", fontSize: "1.3rem" }}>{selectedItem.type} Details</h2>
+              <button className="figma-close-btn" onClick={() => setSelectedItem(null)} style={{ fontSize: "1.8rem" }}>
+                &times;
+              </button>
+            </div>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div>
+                <strong style={{ color: "#64748b", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Title</strong>
+                <div style={{ fontSize: "1.1rem", fontWeight: "700", color: "#0f172a", marginTop: "4px" }}>
+                  {selectedItem.data.title}
+                </div>
+              </div>
+              
+              <div>
+                <strong style={{ color: "#64748b", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Subject</strong>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "4px", fontWeight: "700", color: "#1e293b" }}>
+                  <span style={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: selectedItem.subject?.color || "#cbd5e1" }} />
+                  {selectedItem.subject ? selectedItem.subject.name : "None"}
+                </div>
+              </div>
+
+              {selectedItem.type === "Event" && (
+                <div>
+                  <strong style={{ color: "#64748b", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Time</strong>
+                  <div style={{ fontWeight: "600", color: "#1e293b", marginTop: "4px" }}>
+                    {formatShortDate(selectedItem.data.date)} • {formatTimeRange(selectedItem.data.startTime, selectedItem.data.endTime)}
+                  </div>
+                </div>
+              )}
+
+              {selectedItem.type === "Assignment" && (
+                <div>
+                  <strong style={{ color: "#64748b", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Due Date</strong>
+                  <div style={{ fontWeight: "700", color: "#ef4444", marginTop: "4px" }}>
+                    {formatShortDate(selectedItem.data.dueDate)}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div style={{ marginTop: "24px", display: "flex", justifyContent: "flex-end" }}>
+              <button onClick={() => setSelectedItem(null)} className="figma-cancel-btn" style={{ borderRadius: "10px", fontWeight: "800", padding: "10px 20px" }}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Add Event Modal */}
       {showModal && (
