@@ -66,6 +66,8 @@ export default function Assignments() {
   const { assignments, subjects, addAssignment } = useStudyPlanner();
 
   const [showModal, setShowModal] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+
   const [formData, setFormData] = useState({
     title: "",
     subjectId: subjects[0]?.id || "",
@@ -94,11 +96,19 @@ export default function Assignments() {
     }));
   }
 
+  function showFeedback(message) {
+    setFeedbackMessage(message);
+
+    setTimeout(() => {
+      setFeedbackMessage("");
+    }, 3000);
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
 
     if (!formData.title.trim() || !formData.dueDate || !formData.subjectId) {
-      alert("Please fill in the title, subject, and due date.");
+      showFeedback("Please fill in the title, subject, and due date.");
       return;
     }
 
@@ -123,6 +133,7 @@ export default function Assignments() {
     });
 
     setShowModal(false);
+    showFeedback("Assignment added successfully!");
   }
 
   function markComplete(id) {
@@ -133,6 +144,7 @@ export default function Assignments() {
     );
 
     localStorage.setItem("assignments", JSON.stringify(updatedAssignments));
+    showFeedback("Assignment marked as complete!");
     window.location.reload();
   }
 
@@ -154,6 +166,10 @@ export default function Assignments() {
           + Add Assignment
         </button>
       </div>
+
+      {feedbackMessage && (
+        <div className="figma-feedback-message">{feedbackMessage}</div>
+      )}
 
       <section className="figma-section-block">
         <div className="figma-section-header">
